@@ -1,7 +1,9 @@
+*{
+    box-sizing: border-box;
+}
 body{
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
     font-family: Arial;
     background: #2d2d81;
 }
@@ -74,15 +76,39 @@ main{
 }
 
 .posts{
-    width: 80%;
+    width: 70%;
 }
 
 .profile{
-    width: 15%;
+    width: 20%;
+    background: white;
+    padding: 20px;
+    position: sticky;
+    top: 100px;
+    border-radius: 20px;
 }
 
+.profile div{
+    font-size: 18px;
+}
+
+.profile a{
+    font-size: 16px;
+    font-weight: bold;
+    color: #2d2d81;
+    text-decoration-line: none;
+    display: block;
+    margin-top: 10px;
+}
+
+.profile a:hover{
+    text-decoration-line: underline;
+}
+
+
+
 .form-post{
-    width: 90%;
+    width: 100%;
     padding: 20px;
     background: white;
     border-radius: 20px;
