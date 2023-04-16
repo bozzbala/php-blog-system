@@ -1,5 +1,5 @@
 <?php include ('./logic/auth.php');
-if(isset($_SESSION['id'])){
+if(isset($_SESSION['email'])){
     header("Location: /");
 }
 ?>

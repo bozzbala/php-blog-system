@@ -16,9 +16,11 @@ if(isset($_POST['register'])) {
     if (mysqli_num_rows($result) > 0) {
         $email_error = "Данная почта уже зарегистрирована";
     }
+    else {
 
-    $result = mysqli_query($conn, "INSERT INTO `users` (`name`, `email`, `password`) VALUES('$name', '$email', $pass)");
+        $result = mysqli_query($conn, "INSERT INTO `users` (`name`, `email`, `password`) VALUES('$name', '$email', $pass)");
 
-    $_SESSION['email'] = $email;
-    header('Location: /');
+        $_SESSION['email'] = $email;
+        header('Location: /');
+    }
 }

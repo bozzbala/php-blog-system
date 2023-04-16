@@ -1,4 +1,8 @@
-<?php include './logic/reg.php' ?>
+<?php include './logic/reg.php';
+if(isset($_SESSION['email'])){
+    header("Location: /");
+}
+?>
 <!doctype html>
 <html lang="en">
 <head>

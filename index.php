@@ -31,7 +31,7 @@ if(isset($_SESSION['email'])) {
                 <li><a href="/contact.php">Контакты</a></li>
             </ul>
         </nav>
-        <a class="login-btn" href="/login.php">Войти</a>
+        <?php if(!$isset){ ?><a class="login-btn" href="/login.php">Войти</a><?php } ?>
     </header>
     <main>
         <div class="container">
