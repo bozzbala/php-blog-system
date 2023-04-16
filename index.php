@@ -1,3 +1,15 @@
+<?php
+session_start();
+$isset = false;
+if(isset($_SESSION['email'])) {
+    $email = $_SESSION['email'];
+    $isset = true;
+    include 'logic/db.php';
+    $result = mysqli_query($conn, "SELECT * FROM users WHERE email='$email'");
+    $row = mysqli_fetch_assoc($result);
+    $name = $row['name'];
+}
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -141,9 +153,13 @@
                 </div>
             </div>
             <div class="profile">
-                <div>WayWardPanda</div>
-                <a href="#">Мой блог</a>
-                <a href="#">Выйти</a>
+                <?php if($isset){?>
+                <div><?php echo $name ?></div>
+                <a href="blog.php?id=<?php echo $row['id'] ?>">Мой блог</a>
+                <a href="logout.php">Выйти</a>
+                <?php } else {?>
+                    <a href="login.php">Войдите чтобы воспользоваться</a>
+                <?php } ?>
             </div>
         </div>
     </main>

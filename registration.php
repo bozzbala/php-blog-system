@@ -1,3 +1,4 @@
+<?php include './logic/reg.php' ?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -11,22 +12,25 @@
 </head>
 <body>
 <div class="auth-container">
-    <form>
+    <form method="post" action="registration.php">
         <div class="auth">
             <div class="logo"><i class="fa-solid fa-database"></i></div>
             <div class="auth-group">
                 <label for="email">Электронная почта</label>
                 <input class=auth-control" type="email" placeholder="Почта" name="email" id="email" maxlength="50"/>
+                <?php if (isset($email_error)): ?>
+                    <span><?php echo $email_error; ?></span>
+                <?php endif ?>
             </div>
             <div class="auth-group">
                 <label for="name">Имя</label>
-                <input class=auth-control" type="email" placeholder="Ваше полное имя" name="name" id="name" maxlength="50"/>
+                <input class=auth-control" type="text   " placeholder="Ваше полное имя" name="name" id="name" maxlength="50"/>
             </div>
             <div class="auth-group">
                 <label for="pass">Пароль</label>
                 <input class=auth-control" type="password" placeholder="Ваш пароль" name="pass" id="pass" />
             </div>
-            <button type="submit">Войти</button>
+            <button type="submit" name="register">Войти</button>
             <br>
             <a href="/login.php">У меня есть аккаунт</a>
         </div>

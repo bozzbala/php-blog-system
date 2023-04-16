@@ -1,3 +1,8 @@
+<?php include ('./logic/auth.php');
+if(isset($_SESSION['id'])){
+    header("Location: /");
+}
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -11,18 +16,21 @@
 </head>
 <body>
     <div class="auth-container">
-        <form>
+        <form method="post" action="login.php">
             <div class="auth">
                 <div class="logo"><i class="fa-solid fa-database"></i></div>
                 <div class="auth-group">
                     <label for="email">Электронная почта</label>
                     <input class=auth-control" type="email" placeholder="Почта" name="email" id="email" />
+                    <?php if (isset($email_error)): ?>
+                        <span><?php echo $email_error; ?></span>
+                    <?php endif ?>
                 </div>
                 <div class="auth-group">
                     <label for="pass">Пароль</label>
                     <input class=auth-control" type="password" placeholder="Ваш пароль" name="pass" id="pass" />
                 </div>
-                <button type="submit">Войти</button>
+                <button type="submit" name="register">Войти</button>
                 <br>
                 <a href="registration.php">У меня нет аккаунта</a>
             </div>
