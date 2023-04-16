@@ -19,7 +19,7 @@
                 <li><a href="/contact.php">Контакты</a></li>
             </ul>
         </nav>
-        <a class="login-btn" href="/login.php">Авторизоваться</a>
+        <a class="login-btn" href="/login.php">Войти</a>
     </header>
     <main>
         <div class="container">
