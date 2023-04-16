@@ -1,5 +1,6 @@
 <?php
 session_start();
+$id = '';
 $isset = false;
 if(isset($_SESSION['email'])) {
     $email = $_SESSION['email'];
@@ -8,6 +9,7 @@ if(isset($_SESSION['email'])) {
     $result = mysqli_query($conn, "SELECT * FROM users WHERE email='$email'");
     $row = mysqli_fetch_assoc($result);
     $name = $row['name'];
+    $id = $row['id'];
 }
 ?>
 <!doctype html>
@@ -22,30 +24,20 @@ if(isset($_SESSION['email'])) {
     <script src="https://kit.fontawesome.com/012beec9f6.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <header>
-        <a href="/" class="logo"><i class="fa-solid fa-database"></i></i></a>
-        <nav class="navbar">
-            <ul>
-                <li><a href="/">Главная</a></li>
-                <li><a href="/blog.php">Мой блог</a></li>
-                <li><a href="/contact.php">Контакты</a></li>
-            </ul>
-        </nav>
-        <?php if(!$isset){ ?><a class="login-btn" href="/login.php">Войти</a><?php } ?>
-    </header>
+    <?php include 'inc/header.php'; ?>
     <main>
         <div class="container">
             <div class="posts">
-                <form class="form-post" action="/logic/newPost.php" method="post" enctype="multipart/form-data">
+                <form class="form-post" action="/logic/add-post.php" method="post" enctype="multipart/form-data">
                     <div class="form-control">
-                        <input class="form-input" type="text" placeholder="Введите заголовок"/>
+                        <input class="form-input" name="title" type="text" placeholder="Введите заголовок" required/>
                     </div>
                     <div class="form-control">
-                        <textarea class="form-textarea" rows="5" placeholder="Расскажите миру о своих приключениях!"></textarea>
+                        <textarea class="form-textarea" name="text" rows="5" placeholder="Расскажите миру о своих приключениях!" required></textarea>
                     </div>
                     <div class="form-btn">
-                        <input class="form-files" type="file" multiple>
-                        <button type="submit">Опубликовать</button>
+                        <input class="form-files" type="file" name="upload[]" multiple>
+                        <button type="submit" name="submit">Опубликовать</button>
                     </div>
                 </form>
 
@@ -155,7 +147,7 @@ if(isset($_SESSION['email'])) {
             <div class="profile">
                 <?php if($isset){?>
                 <div><?php echo $name ?></div>
-                <a href="blog.php?id=<?php echo $row['id'] ?>">Мой блог</a>
+                <a href="blog.php?id=<?php echo $id; ?>">Мой блог</a>
                 <a href="logout.php">Выйти</a>
                 <?php } else {?>
                     <a href="login.php">Войдите чтобы воспользоваться</a>

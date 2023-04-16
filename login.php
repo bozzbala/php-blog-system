@@ -21,14 +21,14 @@ if(isset($_SESSION['email'])){
                 <div class="logo"><i class="fa-solid fa-database"></i></div>
                 <div class="auth-group">
                     <label for="email">Электронная почта</label>
-                    <input class=auth-control" type="email" placeholder="Почта" name="email" id="email" />
+                    <input class=auth-control" type="email" placeholder="Почта" name="email" id="email" required/>
                     <?php if (isset($email_error)): ?>
                         <span><?php echo $email_error; ?></span>
                     <?php endif ?>
                 </div>
                 <div class="auth-group">
                     <label for="pass">Пароль</label>
-                    <input class=auth-control" type="password" placeholder="Ваш пароль" name="pass" id="pass" />
+                    <input class=auth-control" type="password" placeholder="Ваш пароль" name="pass" id="pass" required/>
                 </div>
                 <button type="submit" name="register">Войти</button>
                 <br>
