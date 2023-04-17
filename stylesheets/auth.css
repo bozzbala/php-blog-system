@@ -16,7 +16,7 @@
 
 .auth{
     width: 300px;
-    height: 400px;
+    min-height: 400px;
     background: white;
     padding: 20px;
     border-radius: 20px;

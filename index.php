@@ -4,7 +4,7 @@ $id = '';
 $isset = false;
 include 'logic/db.php';
 $allposts = mysqli_query($conn, "SELECT * FROM posts");
-if(isset($_SESSION['email'])) {
+if (isset($_SESSION['email'])) {
     $email = $_SESSION['email'];
     $isset = true;
     include 'logic/db.php';
@@ -18,9 +18,9 @@ function str_split_by_space($str)
 {
     $result = array();
     $new_str = "";
-    for ($i = 0; $i < strlen($str)-1; $i++) {
+    for ($i = 0; $i < strlen($str) - 1; $i++) {
         $new_str .= $str[$i];
-        if($str[$i + 1] == ' ') {
+        if ($str[$i + 1] == ' ') {
             array_push($result, trim($new_str));
             $new_str = "";
         }
@@ -41,63 +41,77 @@ function str_split_by_space($str)
     <script src="https://kit.fontawesome.com/012beec9f6.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <?php include 'inc/header.php'; ?>
-    <main>
-        <div class="container">
-            <div class="posts">
-                <form class="form-post" action="/logic/add-post.php" method="post" enctype="multipart/form-data">
-                    <div class="form-control">
-                        <input class="form-input" name="title" type="text" placeholder="Введите заголовок" required/>
-                    </div>
-                    <div class="form-control">
-                        <textarea class="form-textarea" name="text" rows="5" placeholder="Расскажите миру о своих приключениях!" required></textarea>
-                    </div>
-                    <div class="form-btn">
-                        <input class="form-files" type="file" id="image_url" name="upload[]" multiple="multiple" required>
-                        <button type="submit" name="submit">Опубликовать</button>
-                    </div>
-                </form>
+<?php include 'inc/header.php'; ?>
+<main>
+    <div class="container">
+        <div class="posts">
+            <form class="form-post" action="/logic/add-post.php" method="post" enctype="multipart/form-data">
+                <div class="form-control">
+                    <input class="form-input" name="title" type="text" placeholder="Введите заголовок" required/>
+                </div>
+                <div class="form-control">
+                    <textarea class="form-textarea" name="text" rows="5"
+                              placeholder="Расскажите миру о своих приключениях!" required></textarea>
+                </div>
+                <div class="form-btn">
+                    <input class="form-files" type="file" id="image_url" name="upload[]" multiple="multiple" required>
+                    <button type="submit" name="submit">Опубликовать</button>
+                </div>
+            </form>
 
-                <div class="feed">
-                    <?php while($row = mysqli_fetch_assoc($allposts)) {
-                        $user_id = $row['user_id'];
-                            $userinfo = mysqli_query($conn, "SELECT * FROM users WHERE id='$user_id'");
-                            $user = mysqli_fetch_assoc($userinfo);
-                            $image = str_split_by_space($row['image_url']);
-                        ?>
+            <div class="feed">
+                <?php while ($post = mysqli_fetch_assoc($allposts)) {
+                    $user_id = $post['user_id'];
+                    $userinfo = mysqli_query($conn, "SELECT * FROM users WHERE id='$user_id'");
+                    $user = mysqli_fetch_assoc($userinfo);
+                    $image = str_split_by_space($post['image_url']);
+                    ?>
                     <div class="post">
-                        <a href="/blog.php?id=<?php echo $user['id'] ?>" class="post-author"><?php echo $user['name'] ?></a>
+                        <a href="/blog.php?id=<?php echo $user['id'] ?>"
+                           class="post-author"><?php echo $user['name'] ?></a>
                         <div class="post-container">
                             <div class="post-title">
-                                <div class="post-title__text"><?php echo $row['title'] ?></div>
+                                <div class="post-title__text"><?php echo $post['title'] ?></div>
                                 <div class="post-title__buttons">
-                                    <a href="/edit.php"><i class="fa-solid fa-pen"></i></a>
-                                    <a href="/delete.php"><i class="fa-solid fa-trash"></i></a>
+                                    <?php if ($id == $user_id) { ?>
+                                        <form action="edit.php" method="post">
+                                            <input type="hidden" name="post_id" value="<?php echo $post['id']; ?>" />
+                                            <input type="hidden" name="user_email" value="<?php echo $user['email']; ?>" />
+                                            <button type="submit" id="edit"><i
+                                                        class="fa-solid fa-pen"></i></button>
+                                        </form>
+                                        <form action="delete.php" method="post">
+                                            <input type="hidden" name="post_id" value="<?php echo $post['id']; ?>" />
+                                            <input type="hidden" name="user_email" value="<?php echo $user['email']; ?>" />
+                                            <button type="submit" id="delete"><i
+                                                        class="fa-solid fa-trash"></i></button>
+                                        </form>
+                                    <?php } ?>
                                 </div>
                             </div>
                             <div class="post-text">
-                                <?php echo $row['text'] ?>
+                                <?php echo $post['text'] ?>
                             </div>
                             <div class="post-images">
-                                <?php for($i = 0; $i < count($image); $i++){?>
-                                    <img src="<?php echo '../db/' . $image[$i]; ?>" alt="post-image" />
-                                <?php }?>
+                                <?php for ($i = 0; $i < count($image); $i++) { ?>
+                                    <img src="<?php echo '../db/' . $image[$i]; ?>" alt="post-image"/>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>
-                    <?php } ?>
-                </div>
-            </div>
-            <div class="profile">
-                <?php if($isset){?>
-                <div><?php echo $name ?></div>
-                <a href="blog.php?id=<?php echo $id; ?>">Мой блог</a>
-                <a href="logout.php">Выйти</a>
-                <?php } else {?>
-                    <a href="login.php">Войдите чтобы воспользоваться</a>
                 <?php } ?>
             </div>
         </div>
-    </main>
+        <div class="profile">
+            <?php if ($isset) { ?>
+                <div><?php echo $name ?></div>
+                <a href="blog.php?id=<?php echo $id; ?>">Мой блог</a>
+                <a href="logout.php">Выйти</a>
+            <?php } else { ?>
+                <a href="login.php">Войдите чтобы воспользоваться</a>
+            <?php } ?>
+        </div>
+    </div>
+</main>
 </body>
 </html>

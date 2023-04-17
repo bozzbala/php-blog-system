@@ -197,18 +197,25 @@ main{
     font-weight: bold;
 }
 
-.post-title__buttons a{
+.post-title__buttons{
+    display: flex;
+}
+
+.post-title__buttons form button{
     font-size: 16px;
+    background: none;
+    border: none;
+    outline: none;
     color: #2d2d81;
     margin-left: 10px;
     transition: 0.3s;
 }
 
-.post-title__buttons a:nth-child(1):hover{
+#edit:hover{
     color: green;
 }
 
-.post-title__buttons a:nth-child(2):hover{
+#delete:hover{
     color: red;
 }
 .post-text{
