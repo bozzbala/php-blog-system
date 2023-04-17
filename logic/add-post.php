@@ -14,20 +14,12 @@ $total_count = count($_FILES['upload']);
 
 for ($i = 0; $i < $total_count-1; $i++) {
     $target_dir = "../db/";
+    //. date("i-s")
     $input_str = trim(basename($_FILES["upload"]["name"][$i]));
     $str = preg_replace("/\s+/", "", $input_str);
     $target_file = $target_dir . $str;
     $uploadOk = 1;
     $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-
-    $check = getimagesize($_FILES["upload"]["tmp_name"][$i]);
-    if ($check !== false) {
-        echo "File is an image - " . $check["mime"] . ".";
-        $uploadOk = 1;
-    } else {
-        echo "File is not an image.";
-        $uploadOk = 0;
-    }
 
     if (
         $imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
@@ -48,5 +40,5 @@ for ($i = 0; $i < $total_count-1; $i++) {
 
 $user = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM `users` WHERE email='$email'"));
 $user_id = $user['id'];
-$result = mysqli_query($conn, "INSERT INTO `posts` (`title`, `text`, `image_url`, `user_id`) VALUES('$title', '$text', '$filenames', '$user_id')");
+mysqli_query($conn, "INSERT INTO `posts` (`title`, `text`, `image_url`, `user_id`) VALUES('$title', '$text', '$filenames', '$user_id')");
 header("Location: /");
