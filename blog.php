@@ -51,18 +51,19 @@ $allposts = mysqli_query($conn, "SELECT * FROM posts WHERE user_id='$profile_id'
     <div class="container">
         <div class="posts">
             <?php if ($id == $profile_id) { ?>
-            <form class="form-post" action="/logic/newPost.php" method="post" enctype="multipart/form-data">
-                <div class="form-control">
-                    <input class="form-input" type="text" placeholder="Введите заголовок"/>
-                </div>
-                <div class="form-control">
-                    <textarea class="form-textarea" rows="5" placeholder="Расскажите миру о своих приключениях!"></textarea>
-                </div>
-                <div class="form-btn">
-                    <input class="form-files" type="file" multiple>
-                    <button type="submit">Опубликовать</button>
-                </div>
-            </form>
+                <form class="form-post" action="/logic/add-post.php" method="post" enctype="multipart/form-data">
+                    <div class="form-control">
+                        <input class="form-input" name="title" type="text" placeholder="Введите заголовок" required/>
+                    </div>
+                    <div class="form-control">
+                    <textarea class="form-textarea" name="text" rows="5"
+                              placeholder="Расскажите миру о своих приключениях!" required></textarea>
+                    </div>
+                    <div class="form-btn">
+                        <input class="form-files" type="file" id="image_url" name="upload[]" multiple="multiple" required>
+                        <button type="submit" name="submit">Опубликовать</button>
+                    </div>
+                </form>
             <?php } ?>
 
             <div class="feed">
@@ -71,6 +72,7 @@ $allposts = mysqli_query($conn, "SELECT * FROM posts WHERE user_id='$profile_id'
                     $userinfo = mysqli_query($conn, "SELECT * FROM users WHERE id='$user_id'");
                     $user = mysqli_fetch_assoc($userinfo);
                     $image = str_split_by_space($post['image_url']);
+                    $post_id = $post['id']
                     ?>
                     <div class="post">
                         <a href="/blog.php?id=<?php echo $user['id'] ?>"
@@ -102,6 +104,12 @@ $allposts = mysqli_query($conn, "SELECT * FROM posts WHERE user_id='$profile_id'
                                     <img src="<?php echo '../db/' . $image[$i]; ?>" alt="post-image"/>
                                 <?php } ?>
                             </div>
+                            <a class="comments-num" href="post.php?id=<?php echo $post_id ?>">
+                                <?php
+                                $comments = mysqli_query($conn, "SELECT * FROM comments WHERE post_id='$post_id'");
+                                echo "<i class='fa-solid fa-comment'></i> " . mysqli_num_rows($comments) . " comments";
+                                ?>
+                            </a>
                         </div>
                     </div>
                 <?php } ?>
