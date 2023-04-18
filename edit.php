@@ -60,6 +60,7 @@ $image = str_split_by_space($image_url['image_url']);
     <div class="container">
         <div class="posts">
                 <form class="edit-container" method="post" action="logic/editLogic.php" enctype="multipart/form-data">
+                    <input type="hidden" name="post_id" value="<?php echo $post_id ?>">
                     <div class="edit-title">
                         <input type="text" name="post_title" value="<?php echo $post_title ?>">
                     </div>

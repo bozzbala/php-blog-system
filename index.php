@@ -3,7 +3,7 @@ session_start();
 $id = '';
 $isset = false;
 include 'logic/db.php';
-$allposts = mysqli_query($conn, "SELECT * FROM posts");
+$allposts = mysqli_query($conn, "SELECT * FROM posts ORDER BY id DESC");
 if (isset($_SESSION['email'])) {
     $email = $_SESSION['email'];
     $isset = true;
@@ -65,6 +65,7 @@ function str_split_by_space($str)
                     $userinfo = mysqli_query($conn, "SELECT * FROM users WHERE id='$user_id'");
                     $user = mysqli_fetch_assoc($userinfo);
                     $image = str_split_by_space($post['image_url']);
+                    $post_id = $post['id'];
                     ?>
                     <div class="post">
                         <a href="/blog.php?id=<?php echo $user['id'] ?>"
@@ -96,6 +97,12 @@ function str_split_by_space($str)
                                     <img src="<?php echo '../db/' . $image[$i]; ?>" alt="post-image"/>
                                 <?php } ?>
                             </div>
+                            <a class="comments-num" href="post.php?id=<?php echo $post_id ?>">
+                                <?php
+                                $comments = mysqli_query($conn, "SELECT * FROM comments WHERE post_id='$post_id'");
+                                echo "<i class='fa-solid fa-comment'></i> " . mysqli_num_rows($comments) . " comments";
+                                ?>
+                            </a>
                         </div>
                     </div>
                 <?php } ?>

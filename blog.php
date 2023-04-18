@@ -1,14 +1,35 @@
 <?php
 session_start();
+include 'logic/db.php';
 $isset = false;
+$id='';
 if(isset($_SESSION['email'])) {
     $email = $_SESSION['email'];
     $isset = true;
-    include 'logic/db.php';
     $result = mysqli_query($conn, "SELECT * FROM users WHERE email='$email'");
     $row = mysqli_fetch_assoc($result);
     $name = $row['name'];
+    $id = $row['id'];
 }
+
+function str_split_by_space($str)
+{
+    $result = array();
+    $new_str = "";
+    for ($i = 0; $i < strlen($str) - 1; $i++) {
+        $new_str .= $str[$i];
+        if ($str[$i + 1] == ' ') {
+            array_push($result, trim($new_str));
+            $new_str = "";
+        }
+    }
+    return $result;
+}
+
+$profile_id = $_GET['id'];
+$profile_info = mysqli_fetch_assoc(mysqli_query($conn, "SELECT * FROM users WHERE id='$profile_id'"));
+$profile_name = $profile_info['name'];
+$allposts = mysqli_query($conn, "SELECT * FROM posts WHERE user_id='$profile_id' ORDER BY id DESC");
 ?>
 <!doctype html>
 <html lang="en">
@@ -24,8 +45,12 @@ if(isset($_SESSION['email'])) {
 <body>
 <?php include 'inc/header.php'; ?>
 <main>
+    <div class="profile-info">
+        Страница пользователя <span><?php echo $profile_name ?></span>
+    </div>
     <div class="container">
         <div class="posts">
+            <?php if ($id == $profile_id) { ?>
             <form class="form-post" action="/logic/newPost.php" method="post" enctype="multipart/form-data">
                 <div class="form-control">
                     <input class="form-input" type="text" placeholder="Введите заголовок"/>
@@ -38,108 +63,48 @@ if(isset($_SESSION['email'])) {
                     <button type="submit">Опубликовать</button>
                 </div>
             </form>
+            <?php } ?>
 
             <div class="feed">
-                <div class="post">
-                    <a href="#" class="post-author">Temirlan</a>
-                    <div class="post-container">
-                        <div class="post-title">
-                            <div class="post-title__text">Вот такие дела</div>
-                            <div class="post-title__buttons">
-                                <a href="/edit.php"><i class="fa-solid fa-pen"></i></a>
-                                <a href="/delete.php"><i class="fa-solid fa-trash"></i></a>
+                <?php while ($post = mysqli_fetch_assoc($allposts)) {
+                    $user_id = $post['user_id'];
+                    $userinfo = mysqli_query($conn, "SELECT * FROM users WHERE id='$user_id'");
+                    $user = mysqli_fetch_assoc($userinfo);
+                    $image = str_split_by_space($post['image_url']);
+                    ?>
+                    <div class="post">
+                        <a href="/blog.php?id=<?php echo $user['id'] ?>"
+                           class="post-author"><?php echo $user['name'] ?></a>
+                        <div class="post-container">
+                            <div class="post-title">
+                                <div class="post-title__text"><?php echo $post['title'] ?></div>
+                                <div class="post-title__buttons">
+                                    <?php if ($id == $user_id) { ?>
+                                        <form action="edit.php" method="get">
+                                            <input type="hidden" name="post_id" value="<?php echo $post['id']; ?>" />
+                                            <button type="submit" id="edit"><i
+                                                        class="fa-solid fa-pen"></i></button>
+                                        </form>
+                                        <form action="delete.php" method="post">
+                                            <input type="hidden" name="post_id" value="<?php echo $post['id']; ?>" />
+                                            <input type="hidden" name="user_email" value="<?php echo $user['email']; ?>" />
+                                            <button type="submit" id="delete"><i
+                                                        class="fa-solid fa-trash"></i></button>
+                                        </form>
+                                    <?php } ?>
+                                </div>
+                            </div>
+                            <div class="post-text">
+                                <?php echo $post['text'] ?>
+                            </div>
+                            <div class="post-images">
+                                <?php for ($i = 0; $i < count($image); $i++) { ?>
+                                    <img src="<?php echo '../db/' . $image[$i]; ?>" alt="post-image"/>
+                                <?php } ?>
                             </div>
                         </div>
-                        <div class="post-text">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi cum, distinctio ea ex fuga laborum magnam necessitatibus sequi tenetur veritatis! Deleniti expedita temporibus voluptatem! Ipsum molestiae nisi quaerat sint tenetur?
-                        </div>
-                        <div class="post-images">
-                            <img src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8&w=1000&q=80" alt="post-image"/>
-                            <img src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8&w=1000&q=80" alt="post-image"/>
-                            <img src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8&w=1000&q=80" alt="post-image"/>
-                        </div>
                     </div>
-                </div>
-                <div class="post">
-                    <a href="#" class="post-author">Temirlan</a>
-                    <div class="post-container">
-                        <div class="post-title">
-                            <div class="post-title__text">Вот такие дела</div>
-                            <div class="post-title__buttons">
-                                <a href="/edit.php"><i class="fa-solid fa-pen"></i></a>
-                                <a href="/delete.php"><i class="fa-solid fa-trash"></i></a>
-                            </div>
-                        </div>
-                        <div class="post-text">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi cum, distinctio ea ex fuga laborum magnam necessitatibus sequi tenetur veritatis! Deleniti expedita temporibus voluptatem! Ipsum molestiae nisi quaerat sint tenetur?
-                        </div>
-                        <div class="post-images">
-                            <img src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8&w=1000&q=80" alt="post-image"/>
-                            <img src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8&w=1000&q=80" alt="post-image"/>
-                            <img src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8&w=1000&q=80" alt="post-image"/>
-                        </div>
-                    </div>
-                </div>
-                <div class="post">
-                    <a href="#" class="post-author">Temirlan</a>
-                    <div class="post-container">
-                        <div class="post-title">
-                            <div class="post-title__text">Вот такие дела</div>
-                            <div class="post-title__buttons">
-                                <a href="/edit.php"><i class="fa-solid fa-pen"></i></a>
-                                <a href="/delete.php"><i class="fa-solid fa-trash"></i></a>
-                            </div>
-                        </div>
-                        <div class="post-text">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi cum, distinctio ea ex fuga laborum magnam necessitatibus sequi tenetur veritatis! Deleniti expedita temporibus voluptatem! Ipsum molestiae nisi quaerat sint tenetur?
-                        </div>
-                        <div class="post-images">
-                            <img src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8&w=1000&q=80" alt="post-image"/>
-                            <img src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8&w=1000&q=80" alt="post-image"/>
-                            <img src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8&w=1000&q=80" alt="post-image"/>
-                        </div>
-                    </div>
-                </div>
-                <div class="post">
-                    <a href="#" class="post-author">Temirlan</a>
-                    <div class="post-container">
-                        <div class="post-title">
-                            <div class="post-title__text">Вот такие дела</div>
-                            <div class="post-title__buttons">
-                                <a href="/edit.php"><i class="fa-solid fa-pen"></i></a>
-                                <a href="/delete.php"><i class="fa-solid fa-trash"></i></a>
-                            </div>
-                        </div>
-                        <div class="post-text">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi cum, distinctio ea ex fuga laborum magnam necessitatibus sequi tenetur veritatis! Deleniti expedita temporibus voluptatem! Ipsum molestiae nisi quaerat sint tenetur?
-                        </div>
-                        <div class="post-images">
-                            <img src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8&w=1000&q=80" alt="post-image"/>
-                            <img src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8&w=1000&q=80" alt="post-image"/>
-                            <img src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8&w=1000&q=80" alt="post-image"/>
-                        </div>
-                    </div>
-                </div>
-                <div class="post">
-                    <a href="#" class="post-author">Temirlan</a>
-                    <div class="post-container">
-                        <div class="post-title">
-                            <div class="post-title__text">Вот такие дела</div>
-                            <div class="post-title__buttons">
-                                <a href="/edit.php"><i class="fa-solid fa-pen"></i></a>
-                                <a href="/delete.php"><i class="fa-solid fa-trash"></i></a>
-                            </div>
-                        </div>
-                        <div class="post-text">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi cum, distinctio ea ex fuga laborum magnam necessitatibus sequi tenetur veritatis! Deleniti expedita temporibus voluptatem! Ipsum molestiae nisi quaerat sint tenetur?
-                        </div>
-                        <div class="post-images">
-                            <img src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8&w=1000&q=80" alt="post-image"/>
-                            <img src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8&w=1000&q=80" alt="post-image"/>
-                            <img src="https://images.unsplash.com/photo-1575936123452-b67c3203c357?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8aW1hZ2V8ZW58MHx8MHx8&w=1000&q=80" alt="post-image"/>
-                        </div>
-                    </div>
-                </div>
+                <?php } ?>
             </div>
         </div>
         <div class="profile">
