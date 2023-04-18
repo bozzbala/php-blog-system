@@ -46,15 +46,18 @@ function str_split_by_space($str)
     <div class="container">
         <div class="posts">
             <form class="form-post" action="/logic/add-post.php" method="post" enctype="multipart/form-data">
+                <?php if(isset($_SESSION['new-post-error'])){ ?>
+                <h3 style="color: red;"><?php echo $_SESSION['new-post-error']?></h3>
+                <?php } unset($_SESSION['new-post-error']); ?>
                 <div class="form-control">
-                    <input class="form-input" name="title" type="text" placeholder="Введите заголовок" required/>
+                    <input class="form-input" name="title" type="text" placeholder="Введите заголовок"/>
                 </div>
                 <div class="form-control">
                     <textarea class="form-textarea" name="text" rows="5"
-                              placeholder="Расскажите миру о своих приключениях!" required></textarea>
+                              placeholder="Расскажите миру о своих приключениях!"></textarea>
                 </div>
                 <div class="form-btn">
-                    <input class="form-files" type="file" id="image_url" name="upload[]" multiple="multiple" required>
+                    <input class="form-files" type="file" id="image_url" name="upload[]" multiple="multiple">
                     <button type="submit" name="submit">Опубликовать</button>
                 </div>
             </form>

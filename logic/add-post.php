@@ -3,6 +3,14 @@ session_start();
 if (!isset($_POST['submit'])) {
     die("Invalid request");
 }
+
+
+if($_POST['title'] == "" && $_POST['text'] == ""){
+    $_SESSION['new-post-error'] = "Заполните одну из полей";
+    header("Location: /");
+    exit();
+}
+
 include 'db.php';
 $email = $_SESSION['email'];
 $title = $_POST['title'];

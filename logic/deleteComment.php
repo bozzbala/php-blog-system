@@ -41,5 +41,5 @@ if ($_POST['user_id'] != $user_id['id']) {
         unset($image_url[$i]);
     }
     mysqli_query($conn, "DELETE FROM comments WHERE id='$comment_id'");
-    header("Location: /");
+    header("Location: /post.php?id=" . $_POST['post_id']);
 }

@@ -100,6 +100,7 @@ $allcomments = mysqli_query($conn, "SELECT * FROM comments WHERE post_id='$post_
                                 <form action="logic/deleteComment.php" method="post">
                                     <input type="hidden" name="comment_id" value="<?php echo $comment['id']; ?>" />
                                     <input type="hidden" name="user_id" value="<?php echo $comment['user_id']; ?>" />
+                                    <input type="hidden" name="post_id" value="<?php echo $post_id; ?>" />
                                     <button type="submit" id="delete"><i
                                                 class="fa-solid fa-trash"></i></button>
                                 </form>
