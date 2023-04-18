@@ -92,14 +92,14 @@ $allcomments = mysqli_query($conn, "SELECT * FROM comments WHERE post_id='$post_
                         </div>
                         <div class="comment-buttons">
                             <?php if ($id == $comment['user_id']) { ?>
-                                <form action="edit.php" method="get">
-                                    <input type="hidden" name="post_id" value="<?php echo $comment['id']; ?>" />
+                                <form action="logic/editComment.php" method="get">
+                                    <input type="hidden" name="comment_id" value="<?php echo $comment['id']; ?>" />
                                     <button type="submit" id="edit"><i
                                                 class="fa-solid fa-pen"></i></button>
                                 </form>
-                                <form action="delete.php" method="post">
-                                    <input type="hidden" name="post_id" value="<?php echo $comment['id']; ?>" />
-                                    <input type="hidden" name="user_email" value="<?php echo $user['email']; ?>" />
+                                <form action="logic/deleteComment.php" method="post">
+                                    <input type="hidden" name="comment_id" value="<?php echo $comment['id']; ?>" />
+                                    <input type="hidden" name="user_id" value="<?php echo $comment['user_id']; ?>" />
                                     <button type="submit" id="delete"><i
                                                 class="fa-solid fa-trash"></i></button>
                                 </form>

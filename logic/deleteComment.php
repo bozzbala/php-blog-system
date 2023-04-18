@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_POST['post_id'], $_POST['user_email'])) {
+if (!isset($_POST['comment_id'], $_POST['user_id'])) {
     header("Location: /");
 }
 
@@ -23,21 +23,23 @@ function str_split_by_space($str)
 }
 
 
-include 'logic/db.php';
+include 'db.php';
 $email = $_SESSION['email'];
-$post_id = $_POST['post_id'];
-$post = mysqli_query($conn, "SELECT * FROM posts WHERE id='$post_id'");
+$user_id = mysqli_fetch_assoc(mysqli_query($conn, "SELECT id FROM users WHERE email='$email'"));
+$comment_id = $_POST['comment_id'];
+$post = mysqli_query($conn, "SELECT * FROM comments WHERE id='$comment_id'");
 $post_fetch = mysqli_fetch_assoc($post);
-if ($_POST['user_email'] != $email) {
+if ($_POST['user_id'] != $user_id['id']) {
     header("Location: /");
     die("sessions dont match");
 } else {
     $image_url = str_split_by_space($post_fetch['image_url']);
     for($i = 0; $i < count($image_url); $i++) {
         $file_pointer = "./db/" . $image_url[$i];
+        echo $file_pointer . "<br><br>";
         unlink($file_pointer);
         unset($image_url[$i]);
     }
-    mysqli_query($conn, "DELETE FROM posts WHERE id='$post_id'");
+    mysqli_query($conn, "DELETE FROM comments WHERE id='$comment_id'");
     header("Location: /");
 }
