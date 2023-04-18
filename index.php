@@ -74,9 +74,8 @@ function str_split_by_space($str)
                                 <div class="post-title__text"><?php echo $post['title'] ?></div>
                                 <div class="post-title__buttons">
                                     <?php if ($id == $user_id) { ?>
-                                        <form action="edit.php" method="post">
+                                        <form action="edit.php" method="get">
                                             <input type="hidden" name="post_id" value="<?php echo $post['id']; ?>" />
-                                            <input type="hidden" name="user_email" value="<?php echo $user['email']; ?>" />
                                             <button type="submit" id="edit"><i
                                                         class="fa-solid fa-pen"></i></button>
                                         </form>
